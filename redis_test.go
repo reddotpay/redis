@@ -92,7 +92,7 @@ func TestRedis_Retrieve_NotFound(t *testing.T) {
 	mockRedisConn.Command("GET", "key").ExpectError(redigo.ErrNil)
 	reply, err := redis.Retrieve("key")
 	assert.Nil(t, err)
-	assert.Empty(t, reply)
+	assert.Nil(t, reply)
 }
 
 func TestRedis_Retrieve_Error(t *testing.T) {
