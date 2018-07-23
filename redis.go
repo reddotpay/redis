@@ -3,19 +3,19 @@ package redis
 import (
 	"time"
 
-	"github.com/gomodule/redigo/redis"
+	redigo "github.com/gomodule/redigo/redis"
 )
 
 // Pool contains Redis pool
-var Pool *redis.Pool
+var Pool *redigo.Pool
 
 // NewPool initialises a new Redis pool
-func NewPool(endpoint string, maxIdle int, idleTimeout time.Duration) *redis.Pool {
-	return &redis.Pool{
+func NewPool(endpoint string, maxIdle int, idleTimeout time.Duration) *redigo.Pool {
+	return &redigo.Pool{
 		MaxIdle:     maxIdle,
 		IdleTimeout: idleTimeout * time.Second,
-		Dial: func() (redis.Conn, error) {
-			c, err := redis.DialURL(endpoint)
+		Dial: func() (redigo.Conn, error) {
+			c, err := redigo.DialURL(endpoint)
 			if err != nil {
 				return nil, err
 			}
@@ -48,7 +48,7 @@ func Retrieve(key string) (interface{}, error) {
 	conn := Pool.Get()
 	reply, err := conn.Do("GET", key)
 	if err != nil {
-		if err == redis.ErrNil {
+		if err == redigo.ErrNil {
 			return reply, nil
 		}
 
