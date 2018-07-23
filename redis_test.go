@@ -103,3 +103,17 @@ func TestRedis_Retrieve_Error(t *testing.T) {
 	assert.Equal(t, "ERR", err.Error())
 	assert.Empty(t, reply)
 }
+
+func TestRedis_Delete(t *testing.T) {
+	mockRedisConn.Clear()
+	mockRedisConn.Command("DEL", "key").Expect(int64(1))
+	err := redis.Delete("key")
+	assert.Nil(t, err)
+}
+
+func TestRedis_Delete_Error(t *testing.T) {
+	mockRedisConn.Clear()
+	mockRedisConn.Command("DEL", "key").ExpectError(errors.New("ERR"))
+	err := redis.Delete("key")
+	assert.Equal(t, "ERR", err.Error())
+}

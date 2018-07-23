@@ -57,3 +57,14 @@ func Retrieve(key string) (interface{}, error) {
 
 	return reply, err
 }
+
+// Delete deletes a value by key
+func Delete(key string) error {
+	conn := Pool.Get()
+	_, err := conn.Do("DEL", key)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
