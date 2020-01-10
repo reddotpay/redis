@@ -43,6 +43,25 @@ func Store(key string, value interface{}, expiryInSeconds int) error {
 	return nil
 }
 
+// Append stores key-value pairs in Redis with expiry
+func Append(key string, value interface{}, expiryInSeconds int) error {
+	conn := Pool.Get()
+
+	conn.Send("MULTI")
+	conn.Send("APPEND", key, value)
+
+	if expiryInSeconds > 0 {
+		conn.Send("EXPIRE", key, expiryInSeconds)
+	}
+
+	_, err := conn.Do("EXEC")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Retrieve retrieves value by key
 func Retrieve(key string) (interface{}, error) {
 	conn := Pool.Get()
