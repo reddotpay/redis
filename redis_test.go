@@ -117,3 +117,16 @@ func TestRedis_Delete_Error(t *testing.T) {
 	err := redis.Delete("key")
 	assert.Equal(t, "ERR", err.Error())
 }
+
+func TestRedis_Append_String(t *testing.T) {
+	expiryInSeconds := 10
+	mockRedisConn.Clear()
+	mockRedisConn.Command("MULTI")
+	mockRedisConn.Command("APPEND", "key", "value")
+	mockRedisConn.Command("EXPIRE", "key", expiryInSeconds)
+	mockRedisConn.Command("EXEC")
+	err := redis.Append("key", "value", expiryInSeconds)
+	assert.Nil(t, err)
+	err2 := redis.Append("key", "value", expiryInSeconds)
+	assert.Nil(t, err2)
+}
